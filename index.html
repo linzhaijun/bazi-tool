@@ -288,7 +288,7 @@ function analyze(){
   dayun.forEach((dy,i)=>{
     let startYear=2020+i*10;
     if(i>=1){
-      html+=`<div class="dash-row"><span class="label">${dyLabels[i]||dy.label}</span><span class="value">${dy.gan}${dy.zhi}${dy.gan}${dy.zhi}</span></div>`;
+      html+=`<div class="dash-row"><span class="label">${dy.period||dy.label}</span><span class="value">${dy.gan}${dy.zhi}</span></div>`;
     } else {
       html+=`<div class="dash-row"><span class="label">~24岁前行运</span><span class="value">${dy.label}</span></div>`;
     }
