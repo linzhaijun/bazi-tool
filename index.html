@@ -429,8 +429,11 @@ function genPro(){
   var zT=zangs.filter(function(g){return allG.indexOf(g)>=0});
   var ySS=gSS(bz.ri.gan,bq);
   h+='月令：<b>'+bz.yue.zhi+'</b>（藏干：'+zangs.join("、")+'）<br>';
+h+='<span style=font-size:11px;color:#888;>👉 月令就是你出生月份的节气。藏干就是藏在月份里的五行能量。</span><br><br>';
   h+='月令本气：<b>'+bq+'</b> → <b>'+ySS+'</b><br>';
+h+='<span style=font-size:11px;color:#888;>👉 本气是月份里最强的五行，它决定你八字的格局（命局类型）。</span><br>';
   h+='透干：'+(zT.length>0?zT.join("、")+'透出':'月令藏干均不透')+'<br><br>';
+h+='<span style=font-size:11px;color:#888;>👉 透干就是藏在月份里的五行出现在年、月、日、时的天干上，会更明显影响命运。</span><br><br>';
   var gn="",gd="";
   if(ySS==="正官"){gn="正官格";gd="官星当令。正官为四吉神之首，宜顺用。";}
   else if(ySS==="七杀"){gn="七杀格";gd=allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"食神制杀格。":"杀印相生格。最高格局之一。";}
@@ -440,7 +443,16 @@ function genPro(){
   else if(ySS==="伤官"){gn="伤官格";gd=allG.indexOf("壬")>=0||allG.indexOf("癸")>=0?"伤官配印格，文贵。":allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"伤官生财格，富格。":"伤官无制。";}
   else{gn="月劫格";gd="身旺，宜用官杀制劫或食伤泄秀。";}
   h+='【格局】<b style=color:#c9a96e;font-size:16px;>'+gn+'</b><br>';
-  h+='格局详论：'+gd+'<br><br>';
+  h+='格局简评：'+gd+'<br>';
+h+='<span style=font-size:11px;color:#888;>👉 '+(function(){
+if(ySS==='正官')return '正官格的人通常守规矩、责任心强，适合做公务员、管理类工作。为人正直但容易太死板，要学会灵活变通。';
+if(ySS==='七杀')return '七杀格的人有魄力、敢闯敢拼，适合创业或军警武职。但容易太莽撞冲动，需要控制脾气和情绪。';
+if(ySS==='正印'||ySS==='偏印')return '印格的人读书好、有学问，适合教育、文化、学术类工作。但有的时候想太多、不够果断。';
+if(ySS==='正财'||ySS==='偏财')return '财格的人财运好，适合经商做买卖。但也要配得好才有钱，如果命局身弱的话再多钱也守不住。';
+if(ySS==='食神')return '食神格的人心宽体胖、有福气，适合做手艺或创意类工作。但要小心过于懒散。';
+if(ySS==='伤官')return '伤官格的人聪明有才华，有艺术天赋。但容易恃才傲物，说话得罪人需要注意。';
+return '月劫/比劫格的人朋友多、讲义气，但容易为朋友破财、吃亏。适合合伙创业但要选择靠谱的伙伴。';
+})()+'</span><br><br>';
   h+='<b>用神变化（子平真诠法）：</b><br>';
   if(zT.length>0&&zT[0]!==bq)h+='月令本气'+bq+'不透，透出'+zT[0]+'（'+gSS(bz.ri.gan,zT[0])+'），格局以透出为准。<br>';
   else if(zT.length>0)h+='月令本气'+bq+'透出，以本气定格。<br>';
@@ -449,40 +461,55 @@ function genPro(){
 
   // 2 用神
   h+=secT+'🎯 二、用神喜忌详解</div>'+secB;
-  h+='<b>① 格局用神</b>：'+bq+'（'+ySS+'）<br><br>';
+  h+='<b>① 格局用神</b>：'+bq+'（'+ySS+'）<br>';
+h+='<span style=font-size:11px;color:#888;>👉 格局用神就是你命局类型最核心的五行。</span><br><br>';
   h+='<b>② 扶抑用神</b><br>';
   if(sc["水"]>3){h+='日主过旺（水极旺）<br>';
+h+='<span style=font-size:11px;color:#888;>👉 你的命局水太多了，像发了洪水，需要用火和土来平衡。</span><br>';
     h+='· 第一用神：<b style=color:#f0e6c5;>火</b>（暖局调候，生土制水）<br>';
     h+='· 第二用神：<b style=color:#81c784;>土</b>（筑堤制水）<br>';
     h+='· 喜神：<b style=color:#81c784;>木</b>（泄水之旺气、生火助燃）<br>';
     h+='· 忌神：<b style=color:#ef9a9a;>金</b>（生水助势）、<b style=color:#ef9a9a;>水</b>（已过旺）<br>';}
-  else{h+='日主中和。<br>';}h+='<br>';
+  else{h+='日主中和。<br>';h+='<span style=font-size:11px;color:#888;>👉 你的命局五行比较均衡，没有特别弱或特别旺的，这是好事情。</span><br>';}h+='<br>';
 
   var seas=(month>=11||month<=1)?"冬":(month>=2&&month<=4)?"春":(month>=5&&month<=7)?"夏":"秋";
   h+='<b>③ 调候用神（穷通宝鉴四时论）</b><br>';
+h+='<span style=font-size:11px;color:#888;>👉 调候就是调节气候。夏天生的怕热要降温，冬天生的怕冷要取暖。</span><br>';
   h+='生于'+seas+'季。';
   if(seas==="冬")h+='寒冷，亟需<b style=color:#f0e6c5;>火</b>暖局调候。无火则金寒水冷。';
   else if(seas==="夏")h+='炎热，需水调候。';else h+='需火。';h+='<br><br>';
   h+='<b>④ 通关用神</b><br>';
+h+='<span style=font-size:11px;color:#888;>👉 通关就是八字里有两个五行相冲相克，要找一个中间人来调和。好比夫妻吵架需要人调解。</span><br>';
   if(sc["水"]>3&&sc["火"]<0.5)h+='水火不交，亟需<b>木</b>通关。<br>';else h+='无明显冲战需通关。<br>';
   h+='<br><b>⑤ 用神喜忌总览</b><br>';
   (ys||[]).forEach(function(y){h+='<span style=display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;font-size:11px;background:'+(y.t==="use"?'rgba(201,169,110,0.2);color:#c9a96e':y.t==="xi"?'rgba(76,175,80,0.15);color:#81c784':'rgba(239,154,154,0.15);color:#ef9a9a')+';>'+(y.t==="use"?"用神":y.t==="xi"?"喜神":"忌神")+'：'+y.n+'</span>';});
+h+='<br><span style=font-size:11px;color:#888;>👉 金色=你需要补的 / 绿色=有帮助的 / 红色=不利的</span><br>';
+h+='<br><b>⚠️ 特别提醒：</b><br>';
+h+='<span style=font-size:11px;color:#888;>你在生活和工作中建议：<br>';
+h+='· 多接触用神喜神属性的人和环境<br>';
+h+='· 尽量避开忌神属性的人和事物<br>';
+h+='· 在忌神大运或流年，小心谨慎<br>';
+h+='· 在用神大运或流年，大胆追求目标</span><br>';
   h+='</div>';
 
   // 3 地支
   h+=secT+'🔗 三、地支关系分析</div>'+secB;
+h+='<span style=font-size:11px;color:#888;>👉 地支就是八字下面的那四个字（年支、月支、日支、时支）。它们之间会互相作用——有的合好（六合），有的打架（六冲、三刑）。</span><br><br>';
   var zA=[bz.nian.zhi,bz.yue.zhi,bz.ri.zhi,bz.shi.zhi];
   var LH={子丑:"土",寅亥:"木",卯戌:"火",辰酉:"金",巳申:"水",午未:"土"};
   var f=false;
   for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){var k=zA[i]+zA[j],k2=zA[j]+zA[i];if(LH[k]||LH[k2]){f=true;h+='✅ 六合：'+N[i]+zA[i]+'与'+N[j]+zA[j]+'合化为'+(LH[k]||LH[k2])+'<br>';}}
   if(!f)h+='四柱地支无明显六合。<br>';
+h+='<span style=font-size:11px;color:#888;>👉 六合是好的，好比两个朋友合作变成更大的力量。</span><br>';
   f=false;
   for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){if(LC[zA[i]]===zA[j]){f=true;h+='⚠️ 六冲：'+N[i]+zA[i]+'冲'+N[j]+zA[j]+'<br>';}}
   if(!f)h+='四柱地支无六冲。<br>';
+h+='<span style=font-size:11px;color:#888;>👉 六冲不好的，好比两个人对着干。流年遇六冲这一年容易有变动、争执或意外。</span><br>';
   var ys3=zA.filter(function(z){return["寅","巳","申"].indexOf(z)>=0}).length;
   if(ys3>=3)h+='🔴 三刑：寅巳申三刑（无恩之刑）<br>';
   var cw3=zA.filter(function(z){return["丑","未","戌"].indexOf(z)>=0}).length;
   if(cw3>=3)h+='🔴 三刑：丑未戌三刑（恃势之刑）<br>';
+h+='<span style=font-size:11px;color:#888;>👉 三刑是比较严重的冲突，代表内耗、生病、官司等。有刑的人容易自己跟自己过不去，凡事不要太钻牛角尖。</span><br>';
   h+='</div>';
 
   // 4 十神
@@ -494,12 +521,17 @@ function genPro(){
     if(s!=="日主"){var d={正官:gd==="female"?"夫星，代表丈夫":"事业、权力、官位",七杀:gd==="female"?"偏夫":"权力威望",正印:"母亲、学业、文凭",偏印:"才华宗教玄学",正财:gd==="male"?"正妻，稳定收入":"稳定收入",偏财:gd==="male"?"情人、父亲、投资":"额外收入",食神:"福星寿星",伤官:"才华叛逆",比肩:"兄弟姐妹、朋友",劫财:"兄弟姐妹、竞争对手"}[s];
     h+='<span style=font-size:11px;color:#666;>&nbsp;&nbsp;'+(d||"")+'</span><br>';}h+='<br>';
   });
-  h+='<b>四吉神/四凶神体系：</b><br><span style=font-size:11px;color:#666;>四吉神（官印财食）为君子，要生之护之。<br>四凶神（杀伤枭刃）为小人，要制之化之。</span><br></div>';
+  h+='<b>四吉神/四凶神体系</b><br><span style=font-size:11px;color:#666;>四吉神（官印财食）为君子，要生之护之。<br>四凶神（杀伤枭刃）为小人，要制之化之。</span><br>';
+h+='<span style=font-size:11px;color:#888;>👉 大白话：<br>· 官印财食这四个是好东西，越多越顺<br>· 杀伤枭刃这四个是坏东西，需要被制住<br>· 吉神太旺也会变压力，凶神被制后也可能成好事</span><br></div>';
 
   // 5 大运
   h+=secT+'⏳ 五、大运流年详解</div>'+secB;
-  h+='<b>大运</b>：大运与命局共10字。大运增力。生扶用神则吉，损伤用神则凶。结合宫位十神判断具体事项。<br><br>';
-  h+='<b>流年</b>：<br>· 有合先合，不冲。<br>· 合冲力量最大 > 刑害破 > 生克。<br>· 格局受损程度 = 凶的程度；修复程度 = 吉的程度。<br>';
+h+='<span style=font-size:11px;color:#888;>👉 大运是你每十年换一次的大趋势，流年是每一年的运气。好比开车——大运是路况，流年是天气。</span><br><br>';
+  h+='<b>大运</b>：十年一大运，每个人的运程起算时间不同。走好运的十年做事顺风顺水，走坏运的十年则要少折腾。<br><br>';
+h+='<span style=font-size:11px;color:#ffd54f;><b>⚠️ 大运期间注意：</b></span><br>';
+h+='<span style=font-size:11px;color:#888;>· 运走好（生扶用神）→ 大胆干，投资、换工作、创业都行<br>· 运走坏（损伤用神）→ 稳着来，少折腾<br>· 运走平 → 可进可退，按自己的节奏来</span><br><br>';
+  h+='<b>流年</b>：<br>';
+h+='<span style=font-size:11px;color:#888;>· 有合先合，不冲：流年来了先看合<br>· 合冲 > 刑害破 > 生克：力量排序<br>· 流年克了用神 = 今年不顺，流年生了用神 = 今年好运</span><br><br>';
   h+='· 流年字同原局 → 并动，该字做功。<br><br>';
   var curY=new Date().getFullYear(),curZ=D[(curY-4)%12];
   h+='<b>'+curY+'年流年：</b><br>';
@@ -508,14 +540,21 @@ function genPro(){
 
   // 6 健康
   h+=secT+'🏥 六、健康提示</div>'+secB;
+h+='<span style=font-size:11px;color:#888;>👉 八字里的五行偏强或偏弱，对应身体不同部位容易出问题。身体是革命的本钱，以下提醒请重视。</span><br>';
   if(sc["水"]>3)h+='⚠️ 水极旺：肾/膀胱/泌尿系统需注意，易水肿、腰膝酸软<br>';
   if(sc["火"]<0.5)h+='⚠️ 火极弱：心脏/血液循环偏弱，手足易冰冷<br>';
   if(sc["土"]<1.5)h+='⚠️ 土偏弱：脾胃消化需注意，忌生冷<br>';
   if(sc["木"]>2&&sc["土"]<1.5)h+='⚠️ 木克土：注意胃病、脾虚<br>';
-  h+='<br><b>断病原则：</b>偏印为经络淤堵，七杀为实际病痛。以年为四肢，月为躯干，日为主脏。<br></div>';
+  h+='<br><span style=font-size:11px;color:#888;><b>💡 日常调理建议：</b><br>';
+if(sc['水']>3)h+='· 少去潮湿的地方，多住干燥温暖的环境<br>';
+if(sc['火']<0.5)h+='· 多吃温热的食物，少吃寒凉的<br>';
+if(sc['土']<1.5)h+='· 三餐要规律，脾胃不好的人可以少吃多餐<br>';
+h+='· 适当运动，规律作息是最好的养生</span><br>';
+h+='<br><b>断病原则（专业参考）：</b><span style=font-size:11px;color:#888;>偏印为经络淤堵，七杀为实际病痛。以年为四肢，月为躯干，日为主脏。</span><br></div>';
 
   // 7 婚姻
   h+=secT+'💑 七、婚姻分析</div>'+secB;
+h+='<span style=font-size:11px;color:#888;>👉 婚姻看夫妻宫（日支）和财官星。夫妻宫就是你配偶住的地方，这里不舒服婚姻就容易出问题。</span><br>';
   if(gd==="male"){
     h+='<b>男命看财：</b>财星为妻。<br>';
     h+='日支'+bz.ri.zhi+'（夫妻宫）：藏干'+(DC[bz.ri.zhi]||[]).join("、")+'<br>';
@@ -527,30 +566,54 @@ function genPro(){
     if(sc["水"]>3){ms-=10;h+='全局水势过旺-10分<br>';}
     var szSS=gSS(bz.ri.gan,bz.shi.gan);
     if(szSS==="正财"||szSS==="偏财"){ms+=10;h+='时柱有财星+10分<br>';}
-    h+='<br>夫妻宫总分：<b style=font-size:20px;color:'+(ms>=80?"#81c784":ms>=50?"#ffd54f":"#ef9a9a")+';>'+ms+'分</b><br>';
+    h+='<br>夫妻宫评价总分：<b style=font-size:20px;color:'+(ms>=80?"#81c784":ms>=50?"#ffd54f":"#ef9a9a")+';>'+ms+'分</b><br>';
+if(ms>=80){h+='🌟 婚姻质量较高，夫妻关系融洽<br>';}else if(ms>=50){h+='👌 总体尚可，需双方用心经营<br>';}else{h+='⚠️ 婚姻压力较大，建议多沟通包容<br>';}
+h+='<br><span style=font-size:11px;color:#888;><b>💡 改善建议：</b><br>';
+if(ms<80)h+='· 夫妻间多沟通少冷战，遇到问题及时解决<br>';
+if(ms<80)h+='· 多包容对方的缺点，世上没有完美的婚姻<br>';
+if(ms<60)h+='· 可找专业命理师做深度婚姻调理建议<br>';
+h+='· 记住：好婚姻靠经营，不是靠算命</span><br>';
     if(ms>=80)h+='🌟 婚姻质量较高<br>';else if(ms>=50)h+='👌 需用心经营<br>';else h+='⚠️ 压力较大<br>';}
   else{
-    h+='<b>女命看官：</b>官杀为夫。<br>';
+    h+='<b>女命看官：</b>官杀为夫。正官是正夫，七杀是偏夫或情人。<br>';
+    h+='<span style=font-size:11px;color:#888;>👉 女人八字里看官就是看老公。官旺则嫁贵夫，官弱则遇人不淑。</span><br>';
     h+='日支'+bz.ri.zhi+'（夫妻宫）：藏干'+(DC[bz.ri.zhi]||[]).join("、")+'<br>';
-  }
+    h+='<span style=font-size:11px;color:#888;>👉 夫妻宫藏着什么十神，就知道你会遇到什么样的人当配偶。</span><br>';
+    h+='<br><span style=font-size:11px;color:#888;><b>💡 女命姻缘建议：</b><br>';
+    h+='· 官星透干 → 容易遇到正缘，把握机会<br>';
+    h+='· 官星在地支藏而不透 → 感情比较被动，需要主动出击<br>';
+    h+='· 官杀混杂 → 容易感情上犹豫不决，要注意选对人</span><br>';  }
   h+='</div>';
 
   // 8 事业
   h+=secT+'🏢 八、事业行业分析</div>'+secB;
+h+='<span style=font-size:11px;color:#888;>👉 根据你的用神喜神选择行业，事半功倍。选错了就像鱼离开了水，怎么做都不顺。</span><br>';
   h+='<b>行业五行建议：</b><br>';
-  h+='· 火属性：能源、餐饮、文化、教育、互联网<br>';
+  h+='<span style=font-size:11px;color:#81c784;>👍 适合你的行业：</span><br>';
+h+='· 火属性：能源、餐饮、文化、教育、互联网<br>';
+h+='<span style=font-size:11px;color:#888;>→ 火代表热情、传播、光明。适合和人打交道、需要热情的工作。</span><br>';
   h+='· 土属性：地产、建筑、顾问、管理<br>';
+h+='<span style=font-size:11px;color:#888;>→ 土代表稳定、承载、诚信。适合做稳定的、需要信任的工作。</span><br>';
   h+='· 木属性：教育、出版、设计<br>';
-  h+='· 金属性：金融、机械（不建议）<br>';
-  h+='· 水属性：物流、水产（不建议）<br></div>';
+h+='<span style=font-size:11px;color:#888;>→ 木代表生长、传播。适合做需要创造力的工作。</span><br>';
+  h+='<span style=font-size:11px;color:#ef9a9a;>👎 需要避开的行业（忌神属性）：</span><br>';
+h+='· 金属性：金融、机械<br>';
+h+='<span style=font-size:11px;color:#888;>→ 金对你来说不利，做这些行业会比较累、财运不好。</span><br>';
+  h+='· 水属性：物流、水产<br>';
+h+='<span style=font-size:11px;color:#888;>→ 同理，水属性行业对你不太友好，建议考虑转型或做副业弥补。</span><br></div>';
 
   // 9 综合
   h+=secT+'🌟 九、综合建议</div>'+secB;
-  h+='① 方位：宜南方/中部，忌北方/西方<br>';
-  h+='② 颜色：宜红/紫/黄/棕，忌黑/蓝/白<br>';
-  h+='③ 数字：宜2/5/7/8，忌1/6<br>';
-  h+='④ 名字：宜用火/土旁汉字，忌水/金旁<br>';
-  h+='⑤ 职业：优先火/土属性行业<br>';
+h+='<span style=font-size:11px;color:#888;>👉 下面是根据你的八字用神给你的生活建议，照着做能让你生活更顺。</span><br>';
+  h+='① 方位（去哪里发展）：南方/中部，忌北方/西方<br>';
+h+='<span style=font-size:11px;color:#888;>→ 往有利方位发展事半功倍。</span><br>';
+  h+='② 颜色（多穿什么颜色）：宜红/紫/黄/棕，忌黑/蓝/白<br>';
+h+='<span style=font-size:11px;color:#888;>→ 选对颜色能提升运势。</span><br>';
+  h+='③ 数字（车牌、楼层、手机号）：宜2/5/7/8，忌1/6<br>';
+h+='<span style=font-size:11px;color:#888;>→ 选吉数有助于旺运。</span><br>';
+  h+='④ 名字（取名或改名）：宜用火/土偏旁汉字，忌水/金偏旁<br>';
+h+='<span style=font-size:11px;color:#888;>→ 名字的五行也能调整运势。</span><br>';
+  h+='⑤ 职业（工作选择）：优先火/土属性行业<br>';
   h+='</div>';
 
   // 推荐名字（基于用神火/土）
