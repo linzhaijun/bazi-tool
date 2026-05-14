@@ -385,23 +385,43 @@ function st(el,tid){
   el.classList.add('active');
 }
 
-// ===== 🔐 密码保护 + 次数限制 =====
+// ===== 🔐 多重密码保护 + 独立次数 =====
 (function(){
-  var KEY = 'bazi2026';     // 访问密码
-  var MAX = 3;              // 最多测算次数
+  // 密码表：每对 [密码, 最大次数]
+  var PWD_MAP = {
+    'bazi01': 5,   // 第1组：5次
+    'bazi02': 5,   // 第2组：5次
+    'bazi03': 5,   // 第3组：5次
+    'bazi04': 5,
+    'bazi05': 5,
+    'bazi06': 5,
+    'bazi07': 5,
+    'bazi08': 5,
+    'bazi09': 5,
+    'bazi10': 5    // 第10组：5次
+  };
+
+  // 当前使用的密码
+  var myPwd = null;
 
   // 一次验证：session存活期间免密
   if(!sessionStorage.getItem('bzok')){
     var p = prompt('请输入访问密码：');
-    if(p !== KEY){
+    if(!p || !PWD_MAP[p]){
       document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#e74c3c;font-size:20px;background:#1a1a2e">❌ 密码错误</div>';
       throw 'bad pwd';
     }
+    myPwd = p;
     sessionStorage.setItem('bzok','1');
+    sessionStorage.setItem('bzpwd', p);
+  } else {
+    myPwd = sessionStorage.getItem('bzpwd');
   }
 
-  // 次数检查
-  var used = parseInt(localStorage.getItem('bzused')||'0');
+  var MAX = PWD_MAP[myPwd];
+
+  // 次数检查（按密码独立存储）
+  var used = parseInt(localStorage.getItem('bzused_' + myPwd)||'0');
   if(used >= MAX){
     document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;padding:30px"><div style="text-align:center;color:#f0e6c5;font-size:18px">📊 使用次数已用完<br><br><span style="font-size:14px;color:#888">如需继续使用请联系获取新密码</span></div></div>';
     throw 'max used';
@@ -410,9 +430,9 @@ function st(el,tid){
   // 拦截analyze，每次调用扣一次
   var _orig = window.analyze;
   window.analyze = function(){
-    var u = parseInt(localStorage.getItem('bzused')||'0');
-    if(u >= MAX){ alert('使用次数已用完'); return; }
-    localStorage.setItem('bzused', (u+1).toString());
+    var u = parseInt(localStorage.getItem('bzused_' + myPwd)||'0');
+    if(u >= MAX){ alert('使用次数已用完，请联系获取新密码'); return; }
+    localStorage.setItem('bzused_' + myPwd, (u+1).toString());
     _orig.apply(this, arguments);
   };
 })();
