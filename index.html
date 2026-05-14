@@ -384,6 +384,38 @@ function st(el,tid){
   document.getElementById(tid).classList.add('active');
   el.classList.add('active');
 }
+
+// ===== 🔐 密码保护 + 次数限制 =====
+(function(){
+  var KEY = 'bazi2026';     // 访问密码
+  var MAX = 3;              // 最多测算次数
+
+  // 一次验证：session存活期间免密
+  if(!sessionStorage.getItem('bzok')){
+    var p = prompt('请输入访问密码：');
+    if(p !== KEY){
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#e74c3c;font-size:20px;background:#1a1a2e">❌ 密码错误</div>';
+      throw 'bad pwd';
+    }
+    sessionStorage.setItem('bzok','1');
+  }
+
+  // 次数检查
+  var used = parseInt(localStorage.getItem('bzused')||'0');
+  if(used >= MAX){
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;padding:30px"><div style="text-align:center;color:#f0e6c5;font-size:18px">📊 使用次数已用完<br><br><span style="font-size:14px;color:#888">如需继续使用请联系获取新密码</span></div></div>';
+    throw 'max used';
+  }
+
+  // 拦截analyze，每次调用扣一次
+  var _orig = window.analyze;
+  window.analyze = function(){
+    var u = parseInt(localStorage.getItem('bzused')||'0');
+    if(u >= MAX){ alert('使用次数已用完'); return; }
+    localStorage.setItem('bzused', (u+1).toString());
+    _orig.apply(this, arguments);
+  };
+})();
 </script>
 <script>
 if('serviceWorker' in navigator){
