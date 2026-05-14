@@ -177,9 +177,14 @@ function wxFromNum(n){let m=n%10;return m in{1:1,2:1}?'木':m in{3:1,4:1}?'火':
 function numType(n){if(JI_NUM[n])return{type:'吉',cls:'eg'};if(XIONG_NUM[n])return{type:'凶',cls:'eb'};return{type:'半吉',cls:'ew'};}
 
 function analyzeName(xing,first,second){
-  let s1=STO[xing]||8,s2=STO[first]||8,s3=STO[second]||8;
-  let tian=s1+1,ren=s1+s2,di=s2+s3,zong=s1+s2+s3,wai=s3+1;
-  let w1=CHW[first]||'',w2=CHW[second]||'';
+  let s1=STO[xing]||8,s2=STO[first]||8;
+  let is2=!second||second==='';
+  let s3=is2?0:(STO[second]||8);
+  let tian=s1+1,ren=s1+s2;
+  let di=is2?s2+1:s2+s3;
+  let zong=is2?s1+s2:s1+s2+s3;
+  let wai=is2?2:s3+1;
+  let w1=CHW[first]||'',w2=is2?'':(CHW[second]||'');
   let details=[
     {name:'天格',num:tian,...numType(tian),note:'祖运'},
     {name:'人格(主运)',num:ren,...numType(ren),note:'',wx:wxFromNum(ren),key:true},
@@ -192,7 +197,7 @@ function analyzeName(xing,first,second){
     if(d.type==='吉')score+=20;else if(d.type==='半吉')score+=8;
     if(d.key){if(d.wx==='土'||d.wx==='火')score+=10;}
   });
-  if(w1==='火'||w1==='土')score+=10;if(w2==='火'||w2==='土')score+=8;
+  if(w1==='火'||w1==='土')score+=10;if(!is2&&(w2==='火'||w2==='土'))score+=8;
   score=Math.min(100,Math.max(0,score));
   return {s1,s2,s3,details,score,w1,w2,ren,di,zong,wai,tian};
 }
@@ -251,8 +256,8 @@ function analyze(){
   
   // 姓名分析
   let ns=null;
-  if(curName&&curName.length>=3){
-    ns=analyzeName(curName[0],curName[1],curName[2]);
+  if(curName&&curName.length>=2){
+    ns=analyzeName(curName[0],curName[1],curName.length>=3?curName[2]:'');
   }
   
   // 保存全局数据给专业全析
@@ -349,8 +354,8 @@ function analyze(){
     let scC=sc>=80?'good':sc>=60?'mid':'bad';
     html+=`<div style="text-align:center;margin:10px 0;"><div class="score-ring ${scC}">${sc}</div><div style="font-size:12px;color:#888;">姓名匹配分</div></div>`;
     html+=`<div style="font-size:12px;line-height:1.8;">
-      <div>笔画：${curName[0]}${ns.s1}画 · ${curName[1]}${ns.s2}画 · ${curName[2]}${ns.s3}画</div>
-      <div>五行：${curName[1]}(${ns.w1||'?'}) + ${curName[2]}(${ns.w2||'?'})</div>
+      <div>笔画：${curName[0]}${ns.s1}画 · ${curName[1]}${ns.s2}画${curName.length>=3?" · "+curName[2]+ns.s3+"画":""}</div>
+      <div>五行：${curName[1]}(${ns.w1||'?'})${curName.length>=3?" + "+curName[2]+"("+(ns.w2||"?")+")":""}</div>
       <div>三才：天${ns.tian}(${wxFromNum(ns.tian)})人${ns.ren}(${wxFromNum(ns.ren)})地${ns.di}(${wxFromNum(ns.di)})</div>`;
     ns.details.forEach(d=>{
       html+=`<div>${d.name}${d.num} → <span class="${d.cls}">${d.type}</span>（${NUM_NAME[d.num]||d.num+`数`}${d.wx?'·五行'+d.wx:''}）${d.note}</div>`;
