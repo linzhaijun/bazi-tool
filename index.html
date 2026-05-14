@@ -552,6 +552,81 @@ function genPro(){
   h+='④ 名字：宜用火/土旁汉字，忌水/金旁<br>';
   h+='⑤ 职业：优先火/土属性行业<br>';
   h+='</div>';
+
+  // 推荐名字（基于用神火/土）
+  h+=secT+'💡 十、八字推荐名</div>'+secB;
+  (function(){
+    // 火土属性笔画吉数: 人格16土吉, 人格15土吉, 地格16土吉, 地格15土吉, 总格31火吉, 总格32火吉
+    var goodNums = [5,6,7,8,11,15,16,17,18,21,23,24,25,31,32,33,35,37,39,41,45,47,48,52,57,61,63,65,67,68,81];
+    var fireChars = [], earthChars = [];
+    for(var c in CHW){
+      var w = CHW[c], s = STO[c]||8;
+      if(w==="火") fireChars.push({c:c,s:s,w:"火"});
+      if(w==="土") earthChars.push({c:c,s:s,w:"土"});
+    }
+    // 姓
+    var xing = p.bazi.ri.gan==="甲"||p.bazi.ri.gan==="乙"?"林":"王";
+    if(window._p && window._p.userName && window._p.userName.length>=2){
+      xing = window._p.userName[0];
+    }
+    var xs = STO[xing]||8;
+    
+    function isGood(n){ return goodNums.indexOf(n) >= 0; }
+    function gName(f1,f2){
+      var rn = xs + f1.s;
+      var dn = f2 ? f1.s + f2.s : f1.s + 1;
+      var zn = f2 ? xs + f1.s + f2.s : xs + f1.s;
+      var wn = f2 ? 2 + f2.s : 2;
+      var ok = isGood(rn) && isGood(dn) && isGood(zn) && isGood(wn);
+      return {
+        name: (f2 ? f1.c + f2.c : f1.c),
+        ren: rn, di: dn, zong: zn, wai: wn,
+        ok: ok,
+        renWx: (["水","木","火","土","金"])[rn%5]||"？",
+        desc: (f2 ? f1.c+"("+f1.s+"画,"+f1.w+")+"+f2.c+"("+f2.s+"画,"+f2.w+")" : f1.c+"("+f1.s+"画,"+f1.w+")")
+      };
+    }
+    
+    // 生成推荐
+    var recs = [];
+    // 2字方案: 姓+单名(火/土)
+    for(var i=0; i<fireChars.length; i++){
+      var f1 = fireChars[i];
+      var r = gName(f1, null);
+      if(r.ok) recs.push({name: xing + r.name, type:"双字", desc: r.name+"(火)", ren:r.ren, di:r.di, zong:r.zong, wai:r.wai, renWx:r.renWx});
+      if(recs.length >= 3) break;
+    }
+    for(var i=0; i<earthChars.length && recs.length < 3; i++){
+      var f1 = earthChars[i];
+      var r = gName(f1, null);
+      if(r.ok) recs.push({name: xing + r.name, type:"双字", desc: r.name+"(土)", ren:r.ren, di:r.di, zong:r.zong, wai:r.wai, renWx:r.renWx});
+    }
+    // 3字方案
+    for(var i=0; i<fireChars.length && recs.length < 2; i++){
+      for(var j=0; j<earthChars.length && recs.length < 2; j++){
+        if(i===j) continue;
+        var r = gName(fireChars[i], earthChars[j]);
+        if(r.ok) recs.push({name: xing + r.name, type:"三字", desc: r.desc, ren:r.ren, di:r.di, zong:r.zong, wai:r.wai, renWx:r.renWx});
+      }
+    }
+    
+    if(recs.length > 0){
+      for(var i=0; i<Math.min(2,recs.length); i++){
+        var n = recs[i];
+        h+='<div style=background:rgba(201,169,110,0.08);border-radius:8px;padding:10px;margin:6px 0;>';
+        h+='<div style=font-size:16px;font-weight:700;color:#c9a96e;>推荐名 '+(i+1)+'：'+n.name+'</div>';
+        h+='<div style=font-size:12px;color:#ccc;margin-top:4px;>'+n.desc+'</div>';
+        h+='<div style=font-size:11px;color:#888;margin-top:4px;>五行配置：天格'+(xs+1)+'(?)｜人格'+n.ren+'('+n.renWx+')｜地格'+n.di+'('+(["水","木","火","土","金"])[n.di%5]+')｜总格'+n.zong+'('+(["水","木","火","土","金"])[n.zong%5]+')｜外格'+n.wai+'('+(["水","木","火","土","金"])[n.wai%5]+')</div>';
+        if(n.renWx==="火"||n.renWx==="土") h+='<div style=font-size:11px;color:#81c784;margin-top:2px;>✅ 人格五行('+n.renWx+')匹配用神</div>';
+        h+='</div>';
+      }
+      h+='<div style=font-size:11px;color:#666;margin-top:8px;>以上基于八字用神自动生成，详细起名建议请咨询专业命理师</div>';
+    } else {
+      h+='<div style=font-size:12px;color:#888;>暂未找到最佳组合，建议联系专业命理师</div>';
+    }
+  })();
+  h+='</div>';
+
   h+='<br><div style=font-size:11px;color:#888;text-align:center;padding:10px;border-top:1px solid rgba(255,255,255,0.1);>以上基于《子平真诠》《渊海子评》《穷通宝鉴》体系<br>⚠️ 仅供娱乐参考</div>';
   return h;
 }
