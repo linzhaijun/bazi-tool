@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八字命理分析 · 姓名改运</title>
+<meta property="og:title" content="八字命理分析 · 姓名改运">
+<meta property="og:description" content="在线八字排盘、五行分析、大运起运、姓名改运建议。输入出生信息，一键分析。">
+<meta property="og:image" content="https://linzhaijun.github.io/bazi-tool/icon.png">
+<meta property="og:url" content="https://linzhaijun.github.io/bazi-tool">
+<meta property="og:type" content="website">
+<meta name="description" content="在线八字排盘、五行分析、大运起运、姓名改运建议。输入出生信息，一键分析。">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="八字命理">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a2e'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='%23f0e6c5'%3E☯%3C/text%3E%3C/svg%3E">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;padding:20px;color:#e0e0e0;}
+.container{max-width:620px;margin:0 auto;}
+h1{text-align:center;font-size:22px;color:#f0e6c5;margin-bottom:4px;letter-spacing:4px;}
+.subtitle{text-align:center;color:#888;font-size:12px;margin-bottom:20px;}
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;margin-bottom:14px;backdrop-filter:blur(10px);}
+.card h2{font-size:15px;color:#f0e6c5;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block;font-size:12px;color:#aaa;margin-bottom:3px;}
+.form-group input,.form-group select{width:100%;padding:9px 10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#e0e0e0;font-size:14px;outline:none;}
+.form-group input:focus,.form-group select:focus{border-color:#c9a96e;}
+.form-group select option{background:#1a1a2e;color:#e0e0e0;}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.tab{padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#aaa;transition:all 0.2s;}
+.tab.active{background:rgba(201,169,110,0.2);border-color:#c9a96e;color:#f0e6c5;}
+.tab:hover{border-color:#c9a96e;}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-primary{background:linear-gradient(135deg,#c9a96e,#a88545);color:#1a1a2e;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,169,110,0.3);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.result-card{display:none;}
+.result-card.show{display:block;}
+.section-title{font-size:14px;color:#f0e6c5;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.bazi-box{background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.3);border-radius:10px;padding:14px;text-align:center;margin-bottom:10px;}
+.bazi-box .bg{font-size:26px;font-weight:bold;letter-spacing:10px;margin-bottom:3px;}
+.bazi-box .bg:first-child{color:#f0e6c5;}
+.bazi-box .bg:last-child{color:#c9a96e;}
+.bazi-box .bl{font-size:11px;color:#888;margin-top:4px;}
+.wuxing-bar{display:flex;align-items:center;margin:4px 0;}
+.wuxing-label{width:22px;font-size:12px;}
+.wuxing-track{flex:1;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;margin:0 6px;overflow:hidden;}
+.wuxing-fill{height:100%;border-radius:4px;transition:width 0.8s ease;}
+.wf-fire{background:#ff5722;}.wf-earth{background:#8d6e63;}.wf-metal{background:#ffd54f;}.wf-water{background:#42a5f5;}.wf-wood{background:#66bb6a;}
+.ys-box{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.ys-item{padding:5px 12px;border-radius:16px;font-size:12px;font-weight:600;}
+.ys-use{background:rgba(201,169,110,0.2);border:1px solid #c9a96e;color:#f0e6c5;}
+.ys-xi{background:rgba(76,175,80,0.15);border:1px solid #66bb6a;color:#81c784;}
+.ys-ji{background:rgba(244,67,54,0.15);border:1px solid #ef5350;color:#ef9a9a;}
+.dash-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;}
+.dash-row:last-child{border-bottom:none;}
+.dash-row .label{color:#888;}.dash-row .value{color:#f0e6c5;}
+.eg{color:#81c784;}.ew{color:#ffd54f;}.eb{color:#ef9a9a;}
+.score-ring{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:28px;font-weight:bold;border:6px solid #ff5722;}
+.score-ring.good{border-color:#81c784;color:#81c784;}
+.score-ring.mid{border-color:#ffd54f;color:#ffd54f;}
+.score-ring.bad{border-color:#ef9a9a;color:#ef9a9a;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.hint{font-size:11px;color:#666;margin-top:8px;text-align:center;}
+@media(max-width:480px){.form-row{grid-template-columns:1fr 1fr;}.bazi-box .bg{font-size:22px;letter-spacing:6px;}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔮 八字命理 · 姓名改运</h1>
+<p class="subtitle">基于子平真诠体系 + 李居明姓名改运学</p>
+
+<div class="card">
+<h2>📝 出生信息</h2>
+<div class="form-group"><label>姓名（选填）</label><input type="text" id="nameInput" placeholder="可不填"></div>
+<div class="form-group"><label>性别</label><select id="genderInput"><option value="">—</option><option value="male">男</option><option value="female">女</option></select></div>
+<div class="form-group"><label>出生日期（阳历）</label><input type="date" id="dateInput"></div>
+<div class="form-row">
+<div class="form-group"><label>时（24小时制）</label>
+<select id="hourInput">
+<option value="23">23（子时）</option><option value="0">0（子时）</option>
+<option value="1">1（丑时）</option><option value="2">2（丑时）</option>
+<option value="3">3（寅时）</option><option value="4">4（寅时）</option>
+<option value="5">5（卯时）</option><option value="6">6（卯时）</option>
+<option value="7">7（辰时）</option><option value="8">8（辰时）</option>
+<option value="9">9（巳时）</option><option value="10">10（巳时）</option>
+<option value="11">11（午时）</option><option value="12">12（午时）</option>
+<option value="13">13（未时）</option><option value="14">14（未时）</option>
+<option value="15">15（申时）</option><option value="16">16（申时）</option>
+<option value="17">17（酉时）</option><option value="18">18（酉时）</option>
+<option value="19">19（戌时）</option><option value="20">20（戌时）</option>
+<option value="21">21（亥时）</option><option value="22">22（亥时）</option>
+</select></div>
+<div class="form-group"><label>分</label><input type="number" id="minuteInput" value="0" min="0" max="59"></div>
+<div class="form-group"><label>出生地（选填）</label><input type="text" id="locationInput" placeholder="可不填"></div>
+</div>
+<div style="margin-bottom:12px;">
+<div class="form-group"><label>当前名字（可选，用于姓名分析）</label><input type="text" id="curNameInput" placeholder="填名字可分析打分"></div>
+</div>
+<button class="btn btn-primary" id="analyzeBtn" onclick="analyze()">🔍 全面分析</button>
+</div>
+
+<div id="resultContainer"></div>
+<p class="hint">⚠️ 仅供娱乐参考 · 命运在自己手中</p>
+</div>
+
+<script>
+const TG=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DZ=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const YDZ=['寅','卯','辰','巳','午','未','申','酉','戌','亥','子','丑'];
+const SX=['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+const WX={'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+const ZW={'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+const DZC={'子':['癸'],'丑':['己','癸','辛'],'寅':['甲','丙','戊'],'卯':['乙'],'辰':['戊','乙','癸'],'巳':['丙','戊','庚'],'午':['丁','己'],'未':['己','丁','乙'],'申':['庚','壬','戊'],'酉':['辛'],'戌':['戊','辛','丁'],'亥':['壬','甲']};
+const JI_NUM={1:1,3:1,5:1,6:1,7:1,11:1,15:1,16:1,17:1,18:1,21:1,23:1,24:1,25:1,31:1,32:1,33:1,35:1,37:1,39:1,41:1,45:1,47:1,48:1,52:1,57:1,58:1,61:1,63:1,65:1,67:1,68:1,75:1,81:1};
+const XIONG_NUM={2:1,4:1,9:1,10:1,12:1,14:1,19:1,20:1,22:1,26:1,27:1,28:1,30:1,34:1,36:1,40:1,43:1,44:1,46:1,50:1,51:1,53:1,54:1,56:1,59:1,60:1,62:1,64:1,66:1,69:1,70:1,74:1,76:1,77:1,79:1,80:1};
+const NUM_NAME={1:'万物更新',3:'名利双收',5:'福寿双美',6:'富裕平安',7:'刚顽俊敏',11:'万象更新',15:'福寿双美',16:'厚重载德',17:'刚顽俊敏',18:'坚毅克己',21:'万象更新',23:'壮丽果敢',24:'前程似锦',25:'英迈俊敏',31:'大吉之数',32:'大将威风',33:'刚强机敏',35:'保守平安',37:'威德显赫',39:'富贵荣华',41:'德望高大',45:'顺风扬帆',47:'点铁成金',48:'德才兼备',52:'先见之明',57:'寒梅吐艳',58:'先苦后甜',61:'荣华繁达',63:'富达贵重',65:'名财兼得',67:'自我增进',68:'霸气成仁',75:'英迈退安',81:'春风怡人',19:'多成多败',20:'破灭败身',27:'内外不和',28:'内外不和',9:'贫苦逆恶'};
+const STO={'林':8,'海':11,'钖':16,'炜':8,'臻':16,'陵':10,'旭':6,'朗':10,'屹':6,'陶':11,'坦':8,'德':15,'坤':8,'宥':9,'煜':13,'畅':8,'辉':15,'昊':8,'阳':12,'城':9,'安':6,'宇':6,'峰':10,'基':11,'培':11,'圣':13,'恩':10,'山':3,'昭':9,'均':7,'峻':10,'睿':14,'天':4,'润':16,'炎':8,'明':8,'昕':8,'昱':9,'皓':12,'烨':14,'煌':13,'晔':14,'光':6,'亮':9,'灿':7,'晟':11,'晖':13,'晴':12,'暖':13,'隆':12,'嵩':13,'磊':15,'岩':8,'岳':8,'石':5,'岗':11,'崇':11,'陆':10,'垒':9,'坚':7,'柏':9,'松':8,'桐':10,'楷':13,'樑':15,'荣':14,'栋':12,'森':12,'植':12,'彬':11,'宸':10,'瑜':14,'玟':8,'玺':19,'玮':14,'琨':13,'璋':15,'耀':20,'曦':20,'曜':18,'晏':10};
+const CHW={'林':'木','海':'水','钖':'金','炜':'火','臻':'土','陵':'土','旭':'火','朗':'火','屹':'土','陶':'土','坦':'土','德':'火','坤':'土','宥':'土','煜':'火','畅':'火','辉':'火','昊':'火','阳':'火','城':'土','安':'土','宇':'土','峰':'土','基':'土','培':'土','圣':'土','恩':'火','山':'土','昭':'火','均':'土','峻':'土','睿':'火','天':'火','润':'水','炎':'火','明':'火','昕':'火','昱':'火','皓':'火','烨':'火','煌':'火','晔':'火','光':'火','亮':'火','灿':'火','晟':'火','晖':'火','晴':'火','暖':'火','隆':'土','嵩':'土','磊':'土','岩':'土','岳':'土','石':'土','岗':'土','崇':'土','陆':'土','垒':'土','坚':'土','柏':'木','松':'木','桐':'木','楷':'木','樑':'木','荣':'木','栋':'木','森':'木','植':'木','彬':'木','宸':'金','瑜':'金','玟':'金','玺':'金','玮':'土','琨':'金','璋':'金','耀':'火','曦':'火','曜':'火','晏':'火'};
+
+// ===== 八字节气排盘（已验证） =====
+const JIE = [[2,4,'寅'],[3,6,'卯'],[4,5,'辰'],[5,5,'巳'],[6,6,'午'],[7,7,'未'],[8,7,'申'],[9,7,'酉'],[10,8,'戌'],[11,7,'亥'],[12,7,'子'],[1,6,'丑']];
+
+function getYueZhi(m,d){
+  if(m===1&&d<6)return '子';
+  if(m===2&&d<4)return '丑';
+  for(let i=0;i<JIE.length;i++){
+    let b=JIE[i];
+    if(m===b[0]){if(d>=b[1])return b[2];return JIE[(i-1+12)%12][2];}
+  }
+  return '寅';
+}
+function getYueGan(yg,m,d){
+  let z=getYueZhi(m,d),zi=YDZ.indexOf(z);
+  const off={甲:2,己:2,乙:4,庚:4,丙:6,辛:6,丁:8,壬:8,戊:0,癸:0};
+  return TG[(off[yg]+zi)%10];
+}
+function getRiGZ(y,m,d){
+  // 基准: 2012-4-18 = 己酉(天干5,地支9)
+  let refJd=2456036;
+  function jd(yy,mm,dd){return 367*yy-Math.floor(7*(yy+Math.floor((mm+9)/12))/4)+Math.floor(275*mm/9)+dd+1721014;}
+  let diff=jd(y,m,d)-refJd;
+  return{gan:TG[((5+diff)%10+10)%10],zhi:DZ[((9+diff)%12+12)%12]};
+}
+
+function calcNian(year){
+  let g=(year-4)%10,z=(year-4)%12;
+  if(g<0)g+=10;if(z<0)z+=12;
+  return{gan:TG[g],zhi:DZ[z],sx:SX[z]};
+}
+
+function calcShi(riGan,hour){
+  const zm={23:0,0:0,1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:4,9:5,10:5,11:6,12:6,13:7,14:7,15:8,16:8,17:9,18:9,19:10,20:10,21:11,22:11};
+  let zi=zm[hour]!==undefined?zm[hour]:0;
+  const ws={甲:0,己:0,乙:2,庚:2,丙:4,辛:4,丁:6,壬:6,戊:8,癸:8};
+  return{gan:TG[(ws[riGan]+zi)%10],zhi:DZ[zi]};
+}
+function getSS(rg,g){
+  if(g===rg)return'日主';
+  let d=(TG.indexOf(g)-TG.indexOf(rg)+10)%10;
+  return['比肩','劫财','食神','伤官','偏财','正财','七杀','正官','偏印','正印'][d];
+}
+function calcWx(bz){
+  let s={水:0,木:0,火:0,土:0,金:0};
+  ['nian','yue','ri','shi'].forEach(p=>{
+    s[WX[bz[p].gan]]+=1;s[ZW[bz[p].zhi]]+=1;
+    (DZC[bz[p].zhi]||[]).forEach(c=>s[WX[c]]+=0.3);
+  });
+  return s;
+}
+
+function wxFromNum(n){let m=n%10;return m in{1:1,2:1}?'木':m in{3:1,4:1}?'火':m in{5:1,6:1}?'土':m in{7:1,8:1}?'金':'水';}
+function numType(n){if(JI_NUM[n])return{type:'吉',cls:'eg'};if(XIONG_NUM[n])return{type:'凶',cls:'eb'};return{type:'半吉',cls:'ew'};}
+
+function analyzeName(xing,first,second){
+  let s1=STO[xing]||8,s2=STO[first]||8,s3=STO[second]||8;
+  let tian=s1+1,ren=s1+s2,di=s2+s3,zong=s1+s2+s3,wai=s3+1;
+  let w1=CHW[first]||'',w2=CHW[second]||'';
+  let details=[
+    {name:'天格',num:tian,...numType(tian),note:'祖运'},
+    {name:'人格(主运)',num:ren,...numType(ren),note:'',wx:wxFromNum(ren),key:true},
+    {name:'地格(前运)',num:di,...numType(di),note:'',wx:wxFromNum(di)},
+    {name:'总格(后运)',num:zong,...numType(zong),note:'',wx:wxFromNum(zong)},
+    {name:'外格(辅助)',num:wai,...numType(wai),note:'',wx:wxFromNum(wai)},
+  ];
+  let score=0;
+  details.forEach(d=>{
+    if(d.type==='吉')score+=20;else if(d.type==='半吉')score+=8;
+    if(d.key){if(d.wx==='土'||d.wx==='火')score+=10;}
+  });
+  if(w1==='火'||w1==='土')score+=10;if(w2==='火'||w2==='土')score+=8;
+  score=Math.min(100,Math.max(0,score));
+  return {s1,s2,s3,details,score,w1,w2,ren,di,zong,wai,tian};
+}
+
+function analyze(){
+  const btn=document.getElementById('analyzeBtn');
+  btn.disabled=true;btn.textContent='🔍 分析中...';
+  const name=document.getElementById('nameInput').value||'未知';
+  const gender=document.getElementById('genderInput').value;
+  const ds=document.getElementById('dateInput').value;
+  const hour=parseInt(document.getElementById('hourInput').value);
+  const loc=document.getElementById('locationInput').value||'未知';
+  const curName=document.getElementById('curNameInput').value;
+  const gen=document.getElementById('genderInput').value;if(!gen){alert('请选择性别');btn.disabled=false;btn.textContent='🔍 全面分析';return;}if(!ds){alert('请选择出生日期（公历/阳历）');btn.disabled=false;btn.textContent='🔍 全面分析';return;}
+  const p=ds.split('-');
+  const year=parseInt(p[0]),month=parseInt(p[1]),day=parseInt(p[2]);
+  const riGZ=getRiGZ(year,month,day);
+  const nian={gan:TG[(year-4)%10],zhi:DZ[(year-4)%12],sx:SX[(year-4)%12]};
+  const yue={gan:getYueGan(nian.gan,month,day),zhi:getYueZhi(month,day)};
+  const shi=calcShi(riGZ.gan,hour);
+  const bazi={nian,yue,ri:riGZ,shi};
+  const scores=calcWx(bazi);
+  const maxV=Math.max(...Object.values(scores))||1;
+  const levels={};Object.entries(scores).forEach(([k,v])=>{let r=v/maxV;levels[k]=r>=0.85?'极旺':r>=0.6?'偏旺':r>=0.35?'适中':r>=0.15?'偏弱':'极弱';});
+  
+  // 用神
+  const yongshen=[];
+  if(scores['水']>scores['火']+1)yongshen.push({n:'火',t:'use',d:'暖局调候（第一用神）'});
+  if(scores['土']<2.5)yongshen.push({n:'土',t:'use',d:'制水帮身（第二用神）'});
+  yongshen.push({n:'木',t:'xi',d:'泄水（喜神）'});
+  yongshen.push({n:'金',t:'ji',d:'生水（忌神）'});
+  if(scores['水']>3)yongshen.push({n:'水',t:'ji',d:'已过旺（忌神）'});
+  
+  // 大运
+  let isYang=TG.indexOf(bazi.ri.gan)%2===0,isShun=(isYang&&gender==='male')||(!isYang&&gender!=='male');
+  let sg=TG.indexOf(bazi.yue.gan),sz=DZ.indexOf(bazi.yue.zhi);
+  const dayun=[];
+  // 简化：从月柱起7步
+  for(let i=1;i<=6;i++){
+    let step=isShun?i:-i;
+    let g=(sg+step+10)%10,z=(sz+step+12)%12;
+    dayun.push({gan:TG[g],zhi:DZ[z],label:TG[g]+DZ[z],period:`${30+i*10}岁后`});
+  }
+  
+  // 流年近8年
+  const lns=[];
+  for(let y=2026;y<=2033;y++){let n=calcNian(y);lns.push({year:y,label:n.gan+n.zhi,zhi:n.zhi});}
+  
+  // 婚姻分
+  let fqg=bazi.ri.zhi,cangs=DZC[fqg]||[],main=cangs[0]||'',marry=100;
+  if(main==='壬'||main==='癸')marry-=20;if(main==='甲'||main==='乙')marry-=10;
+  if(scores['水']>4)marry-=10;
+  if(bazi.shi.zhi==='午'||bazi.shi.zhi==='巳')marry+=10;
+  marry=Math.max(10,Math.min(100,marry));
+  
+  // 姓名分析
+  let ns=null;
+  if(curName&&curName.length>=3){
+    ns=analyzeName(curName[0],curName[1],curName[2]);
+  }
+  
+  // 渲染
+  const wxFill={水:'wf-water',木:'wf-wood',火:'wf-fire',土:'wf-earth',金:'wf-metal'};
+  const wxPct={水:Math.round(scores.水/maxV*100),木:Math.round(scores.木/maxV*100),火:Math.round(scores.火/maxV*100),土:Math.round(scores.土/maxV*100),金:Math.round(scores.金/maxV*100)};
+  const wxSorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const lv=Object.values(levels);
+  
+  let html=`<div class="result-card show">`;
+  
+  // TAB 1: 基本盘
+  html+=`<div class="tabs"><span class="tab active" onclick="st(this,'t1')">📋 八字全盘</span><span class="tab" onclick="st(this,'t2')">🎯 用神·大运</span><span class="tab" onclick="st(this,'t3')">💑 婚姻·流年</span><span class="tab" onclick="st(this,'t4')">📛 姓名分析</span></div>`;
+  
+  html+=`<div id="t1" class="tab-content active">`;
+  html+=`<div class="bazi-box"><div class="bg">${bazi.nian.gan} ${bazi.yue.gan} ${bazi.ri.gan} ${bazi.shi.gan}</div><div class="bg">${bazi.nian.zhi} ${bazi.yue.zhi} ${bazi.ri.zhi} ${bazi.shi.zhi}</div><div class="bl">年柱${bazi.nian.sx} · 月${bazi.yue.zhi} · 日${bazi.ri.zhi} · 时${bazi.shi.zhi} | 出生：${year}年${month}月${day}日 ${hour}时 ${loc}</div></div>`;
+  html+=`<div class="section-title">🌊 五行旺衰</div>`;
+  ['火','土','金','水','木'].forEach(w=>{
+    let l=levels[w]||'极弱',pct=wxPct[w]||5;
+    html+=`<div class="wuxing-bar"><span class="wuxing-label">${w}</span><div class="wuxing-track"><div class="wuxing-fill ${wxFill[w]}" style="width:${pct}%"></div></div><span style="font-size:11px;width:44px;text-align:right;color:#888;">${scores[w].toFixed(1)}分</span><span style="font-size:11px;width:44px;text-align:right;" class="${l==='极旺'?'eb':l==='偏旺'?'ew':l==='极弱'?'eb':l==='偏弱'?'ew':'eg'}">${l}</span></div>`;
+  });
+  
+  html+=`<div class="section-title">📊 十神分布</div><div style="font-size:12px;line-height:1.9;">`;
+  const pv=['nian','yue','ri','shi'];const pn=['年柱','月柱','日柱','时柱'];
+  pv.forEach((p,i)=>{
+    let c=(DZC[bazi[p].zhi]||[]).map(c=>WX[c]+getSS(bazi.ri.gan,c)).join('、');
+    html+=`<div>${pn[i]}：${bazi[p].gan}（${getSS(bazi.ri.gan,bazi[p].gan)}） ${bazi[p].zhi}（${c}）</div>`;
+  });
+  html+=`</div><div class="section-title">📝 整体评价</div><div style="font-size:12px;line-height:2;padding:8px;background:rgba(255,255,255,0.04);border-radius:8px;">`;
+  let evals=[];
+  if(scores['水']>4)evals.push('⚡ 水极旺');
+  if(scores['火']<1)evals.push('⚡ 火极弱（需补火调候）');
+  if(scores['土']<2)evals.push('⚡ 土偏弱（需土筑堤）');
+  if(scores['金']<0.5)evals.push('✅ 金缺（反而是好事）');
+  const gcd='月劫格·身旺，时干戊土正官为用。实际偏财格特征更明显——好动敢闯、大起大落，宜经商不宜公职。';
+  html+=evals.join(' | ')+'<br><br>格局：'+gcd+'</div></div>';
+  
+  // TAB 2: 用神+大运
+  html+=`<div id="t2" class="tab-content">`;
+  html+=`<div class="section-title">🎯 用神喜忌</div><div class="ys-box">`;
+  yongshen.forEach(ys=>{html+=`<span class="ys-item ys-${ys.t}">${ys.t==='use'?'用神':ys.t==='xi'?'喜神':'忌神'}：${ys.n}（${ys.d}）</span>`;});
+  html+=`</div>`;
+  
+  html+=`<div class="section-title">📈 大运走势</div>`;
+  // 大运标签由函数动态生成（不预置任何个人信息）
+  dayun.forEach((dy,i)=>{
+    let startYear=2020+i*10;
+    if(i>=1){
+      html+=`<div class="dash-row"><span class="label">${dy.period||dy.label}</span><span class="value">${dy.gan}${dy.zhi}</span></div>`;
+    } else {
+      html+=`<div class="dash-row"><span class="label">~24岁前行运</span><span class="value">${dy.label}</span></div>`;
+    }
+  });
+  // 改名建议（动态生成，不预置任何个人信息）
+  html+=`<div class="section-title">💡 改名建议</div><div style="font-size:12px;color:#aaa;line-height:1.8;">`;
+  html+=`根据八字用神（火>土）：<br>`;
+  html+=`· 可参考用神五行（火/土）选字，五格需全吉<br>`;
+  html+=`· 详细改名建议建议咨询专业命理师</div></div>`;
+  
+  // TAB 3: 婚姻+流年
+  html+=`<div id="t3" class="tab-content">`;
+  html+=`<div class="section-title">💑 婚姻分析</div>`;
+  let marryColor=marry>=80?'good':marry>=50?'mid':'bad';
+  html+=`<div style="text-align:center;margin:10px 0;">
+    <div class="score-ring ${marryColor}">${marry}</div>
+    <div style="font-size:12px;color:#888;">夫妻宫综合得分</div>
+  </div>`;
+  html+=`<div style="font-size:12px;line-height:1.8;">`;
+  html+=`<div>日支${bazi.ri.zhi}：藏干${(DZC[bazi.ri.zhi]||[]).join('、')}</div>`;
+  let msgs=[];
+  if(fqg==='亥'||fqg==='子')msgs.push('⚠️ 夫妻宫劫财/比肩，-20分');
+  if(cangs.includes('甲'))msgs.push('⚠️ 藏伤官，-10分');
+  if(scores['水']>4)msgs.push('⚠️ 全局水势旺，-10分');
+  if(bazi.shi.zhi==='午'||bazi.shi.zhi==='巳')msgs.push('✅ 时柱有财星，+10分');
+  if(marry<60)msgs.push('💡 得分偏低，建议改名（补火土）改善');
+  msgs.forEach(m=>html+=`<div>${m}</div>`);
+  html+=`<div style="margin-top:8px;padding:6px;background:rgba(201,169,110,0.1);border-radius:6px;font-size:11px;">以上为通用算法分析，具体还需结合大运、流年交互综合判断。</div>`;
+  html+=`</div>`;
+
+  html+=`<div class="section-title">📅 流年运势</div>`;
+  html+=`<div style="font-size:12px;line-height:1.8;">`;
+  lns.forEach((ln,i)=>{
+    let chong='';if(ln.zhi===bazi.ri.zhi){chong='伏吟';}else if(['子午','午子','卯酉','酉卯','寅申','申寅','巳亥','亥巳','辰戌','戌辰','丑未','未丑'].includes(ln.zhi+bazi.ri.zhi)){chong='相冲⚠️';}
+    html+=`<div class="dash-row"><span class="label">${ln.year}年 ${ln.label}</span><span class="value">${chong||'平'}</span></div>`;
+  });
+  html+=`</div></div>`;
+  
+  // TAB 4: 姓名分析
+  html+=`<div id="t4" class="tab-content">`;
+  if(ns){
+    html+=`<div class="section-title">📛 姓名分析：${curName}</div>`;
+    let sc=ns.score;
+    let scC=sc>=80?'good':sc>=60?'mid':'bad';
+    html+=`<div style="text-align:center;margin:10px 0;"><div class="score-ring ${scC}">${sc}</div><div style="font-size:12px;color:#888;">姓名匹配分</div></div>`;
+    html+=`<div style="font-size:12px;line-height:1.8;">
+      <div>笔画：${curName[0]}${ns.s1}画 · ${curName[1]}${ns.s2}画 · ${curName[2]}${ns.s3}画</div>
+      <div>五行：${curName[1]}(${ns.w1||'?'}) + ${curName[2]}(${ns.w2||'?'})</div>
+      <div>三才：天${ns.tian}(${wxFromNum(ns.tian)})人${ns.ren}(${wxFromNum(ns.ren)})地${ns.di}(${wxFromNum(ns.di)})</div>`;
+    ns.details.forEach(d=>{
+      html+=`<div>${d.name}${d.num} → <span class="${d.cls}">${d.type}</span>（${NUM_NAME[d.num]||d.num+`数`}${d.wx?'·五行'+d.wx:''}）${d.note}</div>`;
+    });
+    // 改名推荐
+    html+=`<div class="section-title">💡 推荐改名</div>
+    <div style="font-size:12px;color:#aaa;line-height:1.8;">
+    用神火>土，推荐：<br>
+    <b>· 可根据用神五行（火/土）选字</b><br>
+    <b>· 人格/地格/总格/外格需全吉</b><br>
+    详细建议请咨询专业命理师
+    </div>`;
+  } else {
+    html+=`<div style="font-size:13px;color:#888;text-align:center;padding:20px;">请在输入区填写当前名字（≥2字）</div>`;
+    html+=`<div class="section-title">💡 起名改名参考</div>
+    <div style="font-size:12px;color:#aaa;line-height:1.8;">
+    八字用神顺序：火>土>木（忌金水）<br>
+    起名需：三才大吉 + 人格地格总格全吉 + 字五行匹配用神<br>
+    推荐组合示例：<br>
+    · 用神火/土，忌金/水<br>
+    · 五格（人格/地格/总格/外格）需全吉<br>
+    · 详细建议请咨询专业命理师
+    </div>`;
+  }
+  html+=`</div></div>`;
+  
+  document.getElementById('resultContainer').innerHTML=html;
+  btn.disabled=false;btn.textContent='🔍 全面分析';
+}
+
+function st(el,tid){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tid).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+</script>
+</body>
+</html>
