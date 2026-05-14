@@ -214,7 +214,7 @@ function analyze(){
   const yue={gan:getYueGan(nian.gan,month,day),zhi:getYueZhi(month,day)};
   const shi=calcShi(riGZ.gan,hour);
   const bazi={nian,yue,ri:riGZ,shi};
-  window._p={bazi,gender,month,scores,levels,yongshen};
+
   const scores=calcWx(bazi);
   const maxV=Math.max(...Object.values(scores))||1;
   const levels={};Object.entries(scores).forEach(([k,v])=>{let r=v/maxV;levels[k]=r>=0.85?'极旺':r>=0.6?'偏旺':r>=0.35?'适中':r>=0.15?'偏弱':'极弱';});
@@ -255,6 +255,8 @@ function analyze(){
     ns=analyzeName(curName[0],curName[1],curName[2]);
   }
   
+  // 保存全局数据给专业全析
+  window._p={bazi:bazi,gender:gender,month:month,scores:scores,levels:levels,yongshen:yongshen,dayun:dayun,marry:marry};
   // 渲染
   const wxFill={水:'wf-water',木:'wf-wood',火:'wf-fire',土:'wf-earth',金:'wf-metal'};
   const wxPct={水:Math.round(scores.水/maxV*100),木:Math.round(scores.木/maxV*100),火:Math.round(scores.火/maxV*100),土:Math.round(scores.土/maxV*100),金:Math.round(scores.金/maxV*100)};
@@ -453,7 +455,7 @@ function unlockPro(){
 
 
 function genPro(){
-  var p=window._p;if(!p)return"请先执行基础分析";
+  var p=window._p;if(!p)return`<div style=text-align:center;padding:30px;color:#e74c3c;>请先执行基础分析</div>`;
   var bz=p.bazi,gd=p.gender,sc=p.scores,lv=p.levels,ys=p.yongshen,month=p.month;
   var T="甲乙丙丁戊己庚辛壬癸".split(""),D="子丑寅卯辰巳午未申酉戌亥".split("");
   var N=["年支","月支","日支","时支"];
@@ -463,116 +465,140 @@ function genPro(){
   function gSS(r,g){if(g===r)return"日主";return S[(T.indexOf(g)-T.indexOf(r)+10)%10];}
   var h="";
 
+  var secT='<div style=background:linear-gradient(90deg,#c9a96e44,transparent);color:#c9a96e;font-size:14px;font-weight:700;padding:8px 12px;margin-top:12px;border-radius:6px;>';
+  var secB='<div style=font-size:12px;line-height:2;padding:10px;background:rgba(255,255,255,0.04);border-radius:8px;>';
+
   // 1 格局
-  h+="<div class=secT>1.格局判定</div><div class=secB>";
+  h+=secT+'📜 一、格局判定</div>'+secB;
   var zangs=DC[bz.yue.zhi]||[],bq=zangs[0]||"";
   var allG=[bz.nian.gan,bz.yue.gan,bz.ri.gan,bz.shi.gan];
   var zT=zangs.filter(function(g){return allG.indexOf(g)>=0});
   var ySS=gSS(bz.ri.gan,bq);
-  h+="月令："+bz.yue.zhi+"(藏干："+zangs.join("、")+")<br>";
-  h+="本气："+bq+"→"+ySS+"<br>";
-  h+="透干："+(zT.length>0?zT.join("、")+"透出":"不透")+"<br><br>";
+  h+='月令：<b>'+bz.yue.zhi+'</b>（藏干：'+zangs.join("、")+'）<br>';
+  h+='月令本气：<b>'+bq+'</b> → <b>'+ySS+'</b><br>';
+  h+='透干：'+(zT.length>0?zT.join("、")+'透出':'月令藏干均不透')+'<br><br>';
   var gn="",gd="";
-  if(ySS==="正官"){gn="正官格";gd="官星当令。";}
-  else if(ySS==="七杀"){gn="七杀格";gd=allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"食神制杀格":"杀印相生格";}
-  else if(ySS==="正印"||ySS==="偏印"){gn=ySS+"格";gd="文贵";}
-  else if(ySS==="正财"||ySS==="偏财"){gn=ySS+"格";gd="旺胜财则富";}
-  else if(ySS==="食神"){gn="食神格";gd="温厚有福";}
-  else if(ySS==="伤官"){gn="伤官格";gd=allG.indexOf("壬")>=0||allG.indexOf("癸")>=0?"配印格":allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"生财格":"无制";}
-  else gn="月劫格";
-  h+="[格局]"+gn+"<br>"+gd+"<br><br>";
-  h+="用神变化：";
-  if(zT.length>0&&zT[0]!==bq)h+="本气"+bq+"不透，透"+zT[0]+"("+gSS(bz.ri.gan,zT[0])+")";
-  else if(zT.length>0)h+="本气"+bq+"透出";
-  else h+="均不透，以本气定格";
-  h+="</div>";
+  if(ySS==="正官"){gn="正官格";gd="官星当令。正官为四吉神之首，宜顺用。";}
+  else if(ySS==="七杀"){gn="七杀格";gd=allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"食神制杀格。":"杀印相生格。最高格局之一。";}
+  else if(ySS==="正印"||ySS==="偏印"){gn=ySS+"格";gd="主文贵学术。";}
+  else if(ySS==="正财"||ySS==="偏财"){gn=ySS+"格";gd="身旺胜财则富。";}
+  else if(ySS==="食神"){gn="食神格";gd="温厚有福，食神生财则富，制杀则贵。";}
+  else if(ySS==="伤官"){gn="伤官格";gd=allG.indexOf("壬")>=0||allG.indexOf("癸")>=0?"伤官配印格，文贵。":allG.indexOf("丙")>=0||allG.indexOf("丁")>=0?"伤官生财格，富格。":"伤官无制。";}
+  else{gn="月劫格";gd="身旺，宜用官杀制劫或食伤泄秀。";}
+  h+='【格局】<b style=color:#c9a96e;font-size:16px;>'+gn+'</b><br>';
+  h+='格局详论：'+gd+'<br><br>';
+  h+='<b>用神变化（子平真诠法）：</b><br>';
+  if(zT.length>0&&zT[0]!==bq)h+='月令本气'+bq+'不透，透出'+zT[0]+'（'+gSS(bz.ri.gan,zT[0])+'），格局以透出为准。<br>';
+  else if(zT.length>0)h+='月令本气'+bq+'透出，以本气定格。<br>';
+  else h+='月令藏干均不透，以本气定格，兼看地支三合会局。<br>';
+  h+='</div>';
 
   // 2 用神
-  h+="<div class=secT>2.用神喜忌详解</div><div class=secB>";
-  h+="(1)格局用神："+bq+"("+ySS+")<br><br>";
-  h+="(2)扶抑用神<br>";
-  if(sc["水"]>3){h+="日主过旺(水极旺)<br>";
-    h+="用神：火(暖局调候)+土(筑堤制水)<br>";
-    h+="喜神：木(泄水生火)<br>";
-    h+="忌神：金+水<br>";}
-  else h+="中和<br>";
+  h+=secT+'🎯 二、用神喜忌详解</div>'+secB;
+  h+='<b>① 格局用神</b>：'+bq+'（'+ySS+'）<br><br>';
+  h+='<b>② 扶抑用神</b><br>';
+  if(sc["水"]>3){h+='日主过旺（水极旺）<br>';
+    h+='· 第一用神：<b style=color:#f0e6c5;>火</b>（暖局调候，生土制水）<br>';
+    h+='· 第二用神：<b style=color:#81c784;>土</b>（筑堤制水）<br>';
+    h+='· 喜神：<b style=color:#81c784;>木</b>（泄水之旺气、生火助燃）<br>';
+    h+='· 忌神：<b style=color:#ef9a9a;>金</b>（生水助势）、<b style=color:#ef9a9a;>水</b>（已过旺）<br>';}
+  else{h+='日主中和。<br>';}h+='<br>';
 
   var seas=(month>=11||month<=1)?"冬":(month>=2&&month<=4)?"春":(month>=5&&month<=7)?"夏":"秋";
-  h+="(3)调候："+seas+"季。"+(seas==="冬"?"寒冷需火暖局":seas==="夏"?"炎热需水":"需火")+"<br><br>";
-  h+="(4)通关："+(sc["水"]>3&&sc["火"]<0.5?"需木通关":"无明显冲战")+"<br>";
-  h+="<br>(5)用神总览<br>";
-  (ys||[]).forEach(function(y){h+="["+(y.t==="use"?"用":y.t==="xi"?"喜":"忌")+"]"+y.n+" ";});h+="</div>";
+  h+='<b>③ 调候用神（穷通宝鉴四时论）</b><br>';
+  h+='生于'+seas+'季。';
+  if(seas==="冬")h+='寒冷，亟需<b style=color:#f0e6c5;>火</b>暖局调候。无火则金寒水冷。';
+  else if(seas==="夏")h+='炎热，需水调候。';else h+='需火。';h+='<br><br>';
+  h+='<b>④ 通关用神</b><br>';
+  if(sc["水"]>3&&sc["火"]<0.5)h+='水火不交，亟需<b>木</b>通关。<br>';else h+='无明显冲战需通关。<br>';
+  h+='<br><b>⑤ 用神喜忌总览</b><br>';
+  (ys||[]).forEach(function(y){h+='<span style=display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;font-size:11px;background:'+(y.t==="use"?'rgba(201,169,110,0.2);color:#c9a96e':y.t==="xi"?'rgba(76,175,80,0.15);color:#81c784':'rgba(239,154,154,0.15);color:#ef9a9a')+';>'+(y.t==="use"?"用神":y.t==="xi"?"喜神":"忌神")+'：'+y.n+'</span>';});
+  h+='</div>';
 
   // 3 地支
-  h+="<div class=secT>3.地支关系分析</div><div class=secB>";
+  h+=secT+'🔗 三、地支关系分析</div>'+secB;
   var zA=[bz.nian.zhi,bz.yue.zhi,bz.ri.zhi,bz.shi.zhi];
   var LH={子丑:"土",寅亥:"木",卯戌:"火",辰酉:"金",巳申:"水",午未:"土"};
   var f=false;
-  for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){var k=zA[i]+zA[j],k2=zA[j]+zA[i];if(LH[k]||LH[k2]){f=true;h+="六合："+N[i]+zA[i]+"与"+N[j]+zA[j]+"合化"+(LH[k]||LH[k2])+"<br>";}}
-  if(!f)h+="无明显六合<br>";
+  for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){var k=zA[i]+zA[j],k2=zA[j]+zA[i];if(LH[k]||LH[k2]){f=true;h+='✅ 六合：'+N[i]+zA[i]+'与'+N[j]+zA[j]+'合化为'+(LH[k]||LH[k2])+'<br>';}}
+  if(!f)h+='四柱地支无明显六合。<br>';
   f=false;
-  for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){if(LC[zA[i]]===zA[j]){f=true;h+="六冲："+N[i]+zA[i]+"冲"+N[j]+zA[j]+"<br>";}}
-  if(!f)h+="无六冲<br>";
+  for(var i=0;i<4;i++)for(var j=i+1;j<4;j++){if(LC[zA[i]]===zA[j]){f=true;h+='⚠️ 六冲：'+N[i]+zA[i]+'冲'+N[j]+zA[j]+'<br>';}}
+  if(!f)h+='四柱地支无六冲。<br>';
   var ys3=zA.filter(function(z){return["寅","巳","申"].indexOf(z)>=0}).length;
+  if(ys3>=3)h+='🔴 三刑：寅巳申三刑（无恩之刑）<br>';
   var cw3=zA.filter(function(z){return["丑","未","戌"].indexOf(z)>=0}).length;
-  if(ys3>=3)h+="寅巳申三刑<br>";
-  if(cw3>=3)h+="丑未戌三刑<br>";
-  h+="</div>";
+  if(cw3>=3)h+='🔴 三刑：丑未戌三刑（恃势之刑）<br>';
+  h+='</div>';
 
   // 4 十神
-  h+="<div class=secT>4.十神分析</div><div class=secB>";
+  h+=secT+'💫 四、十神详尽分析</div>'+secB;
   var its=[{n:"年干",g:bz.nian.gan,z:bz.nian.zhi},{n:"月干",g:bz.yue.gan,z:bz.yue.zhi},{n:"日干",g:bz.ri.gan,z:bz.ri.zhi},{n:"时干",g:bz.shi.gan,z:bz.shi.zhi}];
   its.forEach(function(it){
     var s=gSS(bz.ri.gan,it.g),cang=DC[it.z]||[],cs=cang.map(function(g){return gSS(bz.ri.gan,g);});
-    h+="["+it.n+"]"+it.g+"("+s+")坐"+it.z+"[藏："+cs.join(",")+"]<br>";
+    h+='【'+it.n+'】'+it.g+'（'+s+'）坐'+it.z+'<br><span style=color:#666;font-size:11px;>&nbsp;&nbsp;藏干：'+cang.join("、")+' → '+cs.join("、")+'</span><br>';
+    if(s!=="日主"){var d={正官:gd==="female"?"夫星，代表丈夫":"事业、权力、官位",七杀:gd==="female"?"偏夫":"权力威望",正印:"母亲、学业、文凭",偏印:"才华宗教玄学",正财:gd==="male"?"正妻，稳定收入":"稳定收入",偏财:gd==="male"?"情人、父亲、投资":"额外收入",食神:"福星寿星",伤官:"才华叛逆",比肩:"兄弟姐妹、朋友",劫财:"兄弟姐妹、竞争对手"}[s];
+    h+='<span style=font-size:11px;color:#666;>&nbsp;&nbsp;'+(d||"")+'</span><br>';}h+='<br>';
   });
-  h+="四吉神(官印财食)为君子要生护；四凶神(杀伤枭刃)为小人要制化。</div>";
+  h+='<b>四吉神/四凶神体系：</b><br><span style=font-size:11px;color:#666;>四吉神（官印财食）为君子，要生之护之。<br>四凶神（杀伤枭刃）为小人，要制之化之。</span><br></div>';
 
   // 5 大运
-  h+="<div class=secT>5.大运流年</div><div class=secB>";
-  h+="大运增力，生扶用神吉，损伤用神凶。结合宫位十神定事。<br><br>";
-  h+="流年：合冲&gt;刑害&gt;生克。格局损伤=凶，修复=吉。<br><br>";
+  h+=secT+'⏳ 五、大运流年详解</div>'+secB;
+  h+='<b>大运</b>：大运与命局共10字。大运增力。生扶用神则吉，损伤用神则凶。结合宫位十神判断具体事项。<br><br>';
+  h+='<b>流年</b>：<br>· 有合先合，不冲。<br>· 合冲力量最大 > 刑害破 > 生克。<br>· 格局受损程度 = 凶的程度；修复程度 = 吉的程度。<br>';
+  h+='· 流年字同原局 → 并动，该字做功。<br><br>';
   var curY=new Date().getFullYear(),curZ=D[(curY-4)%12];
-  h+=curY+"年流年：<br>";
-  for(var i=0;i<4;i++){if(LC[zA[i]]===curZ){h+="流年"+curZ+"冲"+N[i]+zA[i]+"<br>";}}
-  h+="</div>";
+  h+='<b>'+curY+'年流年：</b><br>';
+  for(var i=0;i<4;i++){if(LC[zA[i]]===curZ){h+='⚡ 流年'+curZ+'冲'+N[i]+zA[i]+'<br>';}}
+  h+='</div>';
 
   // 6 健康
-  h+="<div class=secT>6.健康提示</div><div class=secB>";
-  if(sc["水"]>3)h+="水旺：肾/膀胱/泌尿注意<br>";
-  if(sc["火"]<0.5)h+="火弱：心脏/血液循环<br>";
-  if(sc["土"]<1.5)h+="土弱：脾胃忌生冷<br>";
-  if(sc["木"]>2&&sc["土"]<1.5)h+="木克土：胃病脾虚<br>";
-  h+="偏印=淤堵，七杀=病痛</div>";
+  h+=secT+'🏥 六、健康提示</div>'+secB;
+  if(sc["水"]>3)h+='⚠️ 水极旺：肾/膀胱/泌尿系统需注意，易水肿、腰膝酸软<br>';
+  if(sc["火"]<0.5)h+='⚠️ 火极弱：心脏/血液循环偏弱，手足易冰冷<br>';
+  if(sc["土"]<1.5)h+='⚠️ 土偏弱：脾胃消化需注意，忌生冷<br>';
+  if(sc["木"]>2&&sc["土"]<1.5)h+='⚠️ 木克土：注意胃病、脾虚<br>';
+  h+='<br><b>断病原则：</b>偏印为经络淤堵，七杀为实际病痛。以年为四肢，月为躯干，日为主脏。<br></div>';
 
   // 7 婚姻
-  h+="<div class=secT>7.婚姻分析</div><div class=secB>";
+  h+=secT+'💑 七、婚姻分析</div>'+secB;
   if(gd==="male"){
-    h+="男命以财为妻<br>";
-    h+="日支"+bz.ri.zhi+"(夫妻宫)：藏"+(DC[bz.ri.zhi]||[]).join("、")+"<br>";
+    h+='<b>男命看财：</b>财星为妻。<br>';
+    h+='日支'+bz.ri.zhi+'（夫妻宫）：藏干'+(DC[bz.ri.zhi]||[]).join("、")+'<br>';
     var rzSS=(DC[bz.ri.zhi]||[]).map(function(g){return gSS(bz.ri.gan,g);});
-    h+="宫十神："+rzSS.join("、")+"<br>";
+    h+='夫妻宫十神：'+rzSS.join("、")+'<br>';
     var ms=100;
-    if(bz.ri.zhi==="亥"||bz.ri.zhi==="子")ms-=20;
-    if((DC[bz.ri.zhi]||[]).indexOf("甲")>=0||(DC[bz.ri.zhi]||[]).indexOf("乙")>=0)ms-=10;
-    if(sc["水"]>3)ms-=10;
-    if(gSS(bz.ri.gan,bz.shi.gan)==="正财"||gSS(bz.ri.gan,bz.shi.gan)==="偏财")ms+=10;
-    h+="夫妻宫分："+ms;
-  } else h+="女命以官杀为夫";
-  h+="</div>";
+    if(bz.ri.zhi==="亥"||bz.ri.zhi==="子"){ms-=20;h+='劫财/比肩本气-20分<br>';}
+    if((DC[bz.ri.zhi]||[]).indexOf("甲")>=0||(DC[bz.ri.zhi]||[]).indexOf("乙")>=0){ms-=10;h+='食伤藏夫妻宫-10分<br>';}
+    if(sc["水"]>3){ms-=10;h+='全局水势过旺-10分<br>';}
+    var szSS=gSS(bz.ri.gan,bz.shi.gan);
+    if(szSS==="正财"||szSS==="偏财"){ms+=10;h+='时柱有财星+10分<br>';}
+    h+='<br>夫妻宫总分：<b style=font-size:20px;color:'+(ms>=80?"#81c784":ms>=50?"#ffd54f":"#ef9a9a")+';>'+ms+'分</b><br>';
+    if(ms>=80)h+='🌟 婚姻质量较高<br>';else if(ms>=50)h+='👌 需用心经营<br>';else h+='⚠️ 压力较大<br>';}
+  else{
+    h+='<b>女命看官：</b>官杀为夫。<br>';
+    h+='日支'+bz.ri.zhi+'（夫妻宫）：藏干'+(DC[bz.ri.zhi]||[]).join("、")+'<br>';
+  }
+  h+='</div>';
 
   // 8 事业
-  h+="<div class=secT>8.事业行业</div><div class=secB>";
-  h+="火：能源、餐饮、教育、互联网<br>";
-  h+="土：地产、建筑、管理<br>";
-  h+="木：出版、设计<br>";
-  h+="金/水：不建议</div>";
+  h+=secT+'🏢 八、事业行业分析</div>'+secB;
+  h+='<b>行业五行建议：</b><br>';
+  h+='· 火属性：能源、餐饮、文化、教育、互联网<br>';
+  h+='· 土属性：地产、建筑、顾问、管理<br>';
+  h+='· 木属性：教育、出版、设计<br>';
+  h+='· 金属性：金融、机械（不建议）<br>';
+  h+='· 水属性：物流、水产（不建议）<br></div>';
 
   // 9 综合
-  h+="<div class=secT>9.综合建议</div><div class=secB>";
-  h+="方位：南方/中部<br>颜色：红/黄/棕<br>数字：2/5/7/8<br>";
-  h+="名字用火/土旁汉字<br>职业优先火/土属性</div>";
-  h+="<div style=text-align:center;color:#888;font-size:11px;padding:10px;>基于子平真诠/渊海子评/穷通宝鉴体系<br>(仅供娱乐参考)</div>";
+  h+=secT+'🌟 九、综合建议</div>'+secB;
+  h+='① 方位：宜南方/中部，忌北方/西方<br>';
+  h+='② 颜色：宜红/紫/黄/棕，忌黑/蓝/白<br>';
+  h+='③ 数字：宜2/5/7/8，忌1/6<br>';
+  h+='④ 名字：宜用火/土旁汉字，忌水/金旁<br>';
+  h+='⑤ 职业：优先火/土属性行业<br>';
+  h+='</div>';
+  h+='<br><div style=font-size:11px;color:#888;text-align:center;padding:10px;border-top:1px solid rgba(255,255,255,0.1);>以上基于《子平真诠》《渊海子评》《穷通宝鉴》体系<br>⚠️ 仅供娱乐参考</div>';
   return h;
 }
 
